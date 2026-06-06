@@ -1,5 +1,6 @@
 import streamlit as st
 import spacy
+from spacy.cli import download
 import pandas as pd
 import plotly.graph_objects as go
 
@@ -26,10 +27,13 @@ st.write("---")
 @st.cache_resource
 def load_spacy():
     try:
+        # Mencoba memuat model
         return spacy.load("en_core_web_sm", disable=['parser', 'ner'])
     except OSError:
-        st.error("Model spaCy belum diunduh. Jalankan: `python -m spacy download en_core_web_sm`")
-        st.stop()
+        # Jika gagal (di Streamlit Cloud), download otomatis secara internal
+        st.warning("Sedang mengunduh model bahasa spaCy untuk pertama kali. Mohon tunggu...")
+        download("en_core_web_sm")
+        return spacy.load("en_core_web_sm", disable=['parser', 'ner'])
 
 nlp = load_spacy()
 
