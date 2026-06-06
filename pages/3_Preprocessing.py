@@ -1,11 +1,12 @@
 import streamlit as st
 import pandas as pd
-import spacy
-import en_core_web_sm
 import numpy as np
 import plotly.express as px
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import TfidfVectorizer
+import spacy
+import subprocess
+import sys
 
 st.set_page_config(page_title="Preprocessing & TF-IDF", layout="wide")
 
@@ -23,16 +24,24 @@ except FileNotFoundError:
     st.error("File dataset tidak ditemukan. Pastikan 'bbc-news-data.csv' ada di folder 'dataset/'.")
     st.stop()
 
+# --- SCRIPT INSTALASI PAKSA UNTUK STREAMLIT CLOUD ---
 @st.cache_resource
 def load_spacy():
     try:
-        # Panggil method .load() langsung dari module yang di-import
+        # Coba import normal
+        import en_core_web_sm
         return en_core_web_sm.load(disable=['parser', 'ner'])
-    except Exception as e:
-        st.error(f"Gagal memuat model: {e}")
-        st.stop()
+    except ModuleNotFoundError:
+        # Jika gagal, paksa server Streamlit install via terminal Python internal
+        st.warning("Sedang menginstal model spaCy di server Cloud. Proses ini hanya terjadi satu kali, mohon tunggu sebentar...")
+        subprocess.check_call([sys.executable, "-m", "pip", "install", "https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.7.1/en_core_web_sm-3.7.1-py3-none-any.whl"])
+        
+        # Setelah terinstal, import ulang
+        import en_core_web_sm
+        return en_core_web_sm.load(disable=['parser', 'ner'])
 
 nlp = load_spacy()
+# ---------------------------------------------------
 
 # 2. FEATURE SELECTION
 st.header("Feature Selection")
