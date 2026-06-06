@@ -50,3 +50,11 @@ st.markdown("""
 5. **Modeling:** Melatih model klasifikasi (Logistic Regression & Naive Bayes) dan melakukan penyesuaian *Hyperparameter*.
 6. **Prediction:** Evaluasi model dan pengujian langsung oleh pengguna.
 """)
+
+st.write("---")
+st.header("Team Members (Kelompok 5)")
+st.markdown("""
+- **Axel Sanjiro Yang** (Computer Science, BINUS University)
+- **Alexandria Natasya Beslar** (Computer Science, BINUS University)
+- **Sean Spencer** (Computer Science, BINUS University)
+""")
