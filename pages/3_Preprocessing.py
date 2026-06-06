@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 import spacy
-from spacy.cli import download
+import en_core_web_sm
 import numpy as np
 import plotly.express as px
 from sklearn.model_selection import train_test_split
@@ -26,13 +26,11 @@ except FileNotFoundError:
 @st.cache_resource
 def load_spacy():
     try:
-        # Mencoba memuat model
-        return spacy.load("en_core_web_sm", disable=['parser', 'ner'])
-    except OSError:
-        # Jika gagal (di Streamlit Cloud), download otomatis secara internal
-        st.warning("Sedang mengunduh model bahasa spaCy untuk pertama kali. Mohon tunggu...")
-        download("en_core_web_sm")
-        return spacy.load("en_core_web_sm", disable=['parser', 'ner'])
+        # Panggil method .load() langsung dari module yang di-import
+        return en_core_web_sm.load(disable=['parser', 'ner'])
+    except Exception as e:
+        st.error(f"Gagal memuat model: {e}")
+        st.stop()
 
 nlp = load_spacy()
 
